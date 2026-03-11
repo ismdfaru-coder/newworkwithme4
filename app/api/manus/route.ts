@@ -59,9 +59,11 @@ export async function POST(request: NextRequest) {
 }
 
 // Get task status with convert=true for final output
+// Includes retry logic for 404 errors (task may not be immediately available after creation)
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const taskId = searchParams.get("taskId")
+  const isFirstPoll = searchParams.get("firstPoll") === "true"
 
   if (!taskId) {
     return NextResponse.json(
@@ -78,23 +80,43 @@ export async function GET(request: NextRequest) {
     )
   }
 
+  // Add a small delay on first poll to allow task to be created
+  if (isFirstPoll) {
+    await new Promise(resolve => setTimeout(resolve, 1500))
+  }
+
   try {
     const url = `${MANUS_API_URL}/${taskId}?convert=true`
     console.log("[v0] GET from Manus API:", url)
     
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "API_KEY": apiKey,
-      },
-    })
+    // Retry logic for 404 errors (task may not be immediately available)
+    let response: Response | null = null
+    let retries = 3
+    
+    while (retries > 0) {
+      response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "API_KEY": apiKey,
+        },
+      })
+      
+      // If 404, wait and retry
+      if (response.status === 404 && retries > 1) {
+        console.log("[v0] Task not found, retrying in 1s...")
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        retries--
+        continue
+      }
+      break
+    }
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.log("[v0] GET Error:", response.status, errorText)
+    if (!response || !response.ok) {
+      const errorText = await response?.text() || "Unknown error"
+      console.log("[v0] GET Error:", response?.status, errorText)
       return NextResponse.json(
-        { error: `Manus API error: ${response.status} - ${errorText}` },
-        { status: response.status }
+        { error: `Manus API error: ${response?.status} - ${errorText}` },
+        { status: response?.status || 500 }
       )
     }
 

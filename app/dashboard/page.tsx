@@ -307,15 +307,20 @@ export default function DashboardPage() {
       const pollForResult = async (): Promise<ManusResponse> => {
         const maxAttempts = 180 // 3 minutes max (180 * 1 second)
         let attempts = 0
+        let isFirstPoll = true
 
         while (attempts < maxAttempts) {
           await new Promise(resolve => setTimeout(resolve, 1000)) // Poll every 1 second for faster response
           
-          console.log("[v0] Polling GET /api/manus?taskId=" + taskId)
-          const statusResponse = await fetch(`/api/manus?taskId=${taskId}`)
+          // Pass firstPoll=true on first request to add delay on server side
+          const pollUrl = `/api/manus?taskId=${taskId}${isFirstPoll ? '&firstPoll=true' : ''}`
+          console.log("[v0] Polling GET", pollUrl)
+          const statusResponse = await fetch(pollUrl)
           const statusData: ManusResponse = await statusResponse.json()
           console.log("[v0] GET Response status:", statusData.status)
           console.log("[v0] GET Response keys:", Object.keys(statusData))
+          
+          isFirstPoll = false
 
           if (!statusResponse.ok) {
             throw new Error(statusData.error || "Failed to get task status")
