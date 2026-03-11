@@ -997,13 +997,19 @@ export default function DashboardPage() {
                     )}
                   </div>
                   
-                  {/* Show active mode indicator */}
+                  {/* Show active mode indicator - persists until user closes it */}
                   {searchMode !== "none" && (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium">
-                      <X className="h-3 w-3 cursor-pointer hover:bg-primary/20 rounded-full" onClick={() => setSearchMode("none")} />
-                      {searchMode === "web" && <><Globe className="h-3 w-3" /><span>Web search</span></>}
-                      {searchMode === "deep" && <><Sparkles className="h-3 w-3" /><span>Deep research</span></>}
-                      {searchMode === "think" && <><Lightbulb className="h-3 w-3" /><span>Think longer</span></>}
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-muted/50 text-foreground text-sm font-medium hover:bg-muted transition-colors">
+                      <button 
+                        onClick={() => setSearchMode("none")} 
+                        className="flex items-center justify-center hover:bg-muted-foreground/20 rounded-full p-0.5 transition-colors"
+                        aria-label="Remove mode"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                      {searchMode === "web" && <><Globe className="h-3.5 w-3.5" /><span>Web search</span></>}
+                      {searchMode === "deep" && <><Sparkles className="h-3.5 w-3.5" /><span>Deep research</span></>}
+                      {searchMode === "think" && <><Lightbulb className="h-3.5 w-3.5" /><span>Think longer</span></>}
                     </div>
                   )}
                 </div>
@@ -1228,13 +1234,19 @@ export default function DashboardPage() {
                 )}
               </div>
               
-              {/* Show active mode indicator */}
+              {/* Show active mode indicator - persists until user closes it */}
               {searchMode !== "none" && (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium">
-                  <X className="h-3 w-3 cursor-pointer hover:bg-primary/20 rounded-full" onClick={() => setSearchMode("none")} />
-                  {searchMode === "web" && <><Globe className="h-3 w-3" /><span>Web search</span></>}
-                  {searchMode === "deep" && <><Sparkles className="h-3 w-3" /><span>Deep research</span></>}
-                  {searchMode === "think" && <><Lightbulb className="h-3 w-3" /><span>Think longer</span></>}
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-muted/50 text-foreground text-sm font-medium hover:bg-muted transition-colors">
+                  <button 
+                    onClick={() => setSearchMode("none")} 
+                    className="flex items-center justify-center hover:bg-muted-foreground/20 rounded-full p-0.5 transition-colors"
+                    aria-label="Remove mode"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                  {searchMode === "web" && <><Globe className="h-3.5 w-3.5" /><span>Web search</span></>}
+                  {searchMode === "deep" && <><Sparkles className="h-3.5 w-3.5" /><span>Deep research</span></>}
+                  {searchMode === "think" && <><Lightbulb className="h-3.5 w-3.5" /><span>Think longer</span></>}
                 </div>
               )}
               
