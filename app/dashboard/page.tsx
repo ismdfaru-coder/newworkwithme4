@@ -167,8 +167,9 @@ export default function DashboardPage() {
     setIsLoading(true)
 
     try {
-      // Use Keyplex for new chat without special modes/keywords (faster, synchronous)
-      if (isNewChat && !shouldUseManus) {
+      // Use Keyplex for normal messages without special modes/keywords (faster, synchronous)
+      // Only use Manus when: user selects web/deep/think mode OR uses keywords like "deep research", "web research", etc.
+      if (!shouldUseManus) {
         setMessages(prev => prev.map(m => 
           m.id === assistantMessage.id 
             ? { 
