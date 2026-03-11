@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
     }
 
     const apiKey = process.env.KEYPLEX_API_KEY
+    console.log("[v0] KEYPLEX_API_KEY exists:", !!apiKey, "Length:", apiKey?.length, "Starts with:", apiKey?.substring(0, 10))
+    
     if (!apiKey) {
       return NextResponse.json(
         { error: "KEYPLEX_API_KEY is not configured" },
