@@ -122,6 +122,9 @@ export default function DashboardPage() {
   const handleSubmit = async () => {
     if (!inputValue.trim() || isLoading) return
 
+    // Check if this is a new chat (no existing messages)
+    const isNewChat = messages.length === 0
+
     // Determine if we should use Manus API based on:
     // 1. Search mode selected (web, deep, think)
     // 2. Keywords in the message
