@@ -80,9 +80,10 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  // Add a small delay on first poll to allow task to be created
+  // Add a delay on first poll to allow task to be created in Manus system
   if (isFirstPoll) {
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    console.log("[v0] First poll - waiting 2.5s for task to be created...")
+    await new Promise(resolve => setTimeout(resolve, 2500))
   }
 
   try {
@@ -91,7 +92,7 @@ export async function GET(request: NextRequest) {
     
     // Retry logic for 404 errors (task may not be immediately available)
     let response: Response | null = null
-    let retries = 3
+    let retries = 5
     
     while (retries > 0) {
       response = await fetch(url, {
@@ -101,10 +102,10 @@ export async function GET(request: NextRequest) {
         },
       })
       
-      // If 404, wait and retry
+      // If 404, wait and retry - task may not be available yet
       if (response.status === 404 && retries > 1) {
-        console.log("[v0] Task not found, retrying in 1s...")
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        console.log("[v0] Task not found, retrying in 2s... (retries left:", retries - 1, ")")
+        await new Promise(resolve => setTimeout(resolve, 2000))
         retries--
         continue
       }
